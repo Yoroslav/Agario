@@ -1,0 +1,32 @@
+# Операционные системы
+.DS_Store
+Thumbs.db
+
+# Visual Studio Code
+.vscode/
+
+# .NET (C#) build files
+bin/
+obj/
+
+# Папки с скомпилированными библиотеками и другими артефактами
+out/
+publish/
+
+# Лог-файлы
+*.log
+
+# Папки и файлы с конфиденциальными данными
+appsettings.Development.json
+appsettings.json
+secrets.json
+
+# Пользовательские файлы, например, кеши
+.idea/
+.vs/
+.vs2019/
+.vs2017/
+
+# Папки для временных данных
+temp/
+tmp/

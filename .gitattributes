@@ -1,2 +1,27 @@
-# Auto detect text files and perform LF normalization
+# Генерация автоматически правильных окончаний строк
 * text=auto
+
+# .NET бинарные файлы (например, .dll, .exe)
+*.dll binary
+*.exe binary
+*.pdb binary
+*.apk binary
+*.zip binary
+*.tar.gz binary
+
+# XML файлы конфигурации
+*.csproj text eol=crlf
+*.sln text eol=crlf
+*.config text eol=crlf
+
+# C# файлы (source code)
+*.cs text eol=crlf
+
+# Файлы логов
+*.log text eol=crlf
+
+# Ресурсы (например, изображения)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
