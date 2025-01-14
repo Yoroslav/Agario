@@ -2,11 +2,11 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-
 public class Player
 {
     public CircleShape Shape { get; private set; }
     private float _speed = 200f;
+    private Vector2f _direction;
 
     public Player(Vector2f position)
     {
@@ -25,17 +25,18 @@ public class Player
         _direction = Normalize(direction);
     }
 
-    private Vector2f _direction;
-
     public void Update(float deltaTime)
     {
         Shape.Position += _direction * _speed * deltaTime;
+
+        Shape.Position = new Vector2f(
+            Math.Clamp(Shape.Position.X, 0, 1600 - Shape.Radius * 2),
+            Math.Clamp(Shape.Position.Y, 0, 1200 - Shape.Radius * 2)
+        );
     }
 
-    public bool CheckCollision(Food food)
-    {
-        return Shape.GetGlobalBounds().Intersects(food.Shape.GetGlobalBounds());
-    }
+    public bool CheckCollision(Food food) => Shape.GetGlobalBounds().Intersects(food.Shape.GetGlobalBounds());
+    public bool CheckCollision(Enemy enemy) => Shape.GetGlobalBounds().Intersects(enemy.Shape.GetGlobalBounds());
 
     public void Grow()
     {
@@ -47,5 +48,11 @@ public class Player
     {
         float length = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
         return length > 0 ? vector / length : vector;
+    }
+
+    public void Reset()
+    {
+        Shape.Position = new Vector2f(400, 300);
+        Shape.Radius = 20; 
     }
 }

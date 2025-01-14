@@ -5,16 +5,18 @@ using SFML.Graphics;
 
 class Program
 {
+    public static float deltaTime; 
+
     static void Main(string[] args)
     {
-        var window = new GameWindow(800, 600, "Agar.io Clone");
+        var window = new GameWindow(1600, 1200, "Agar.io Clone");
         var gameScene = new GameScene();
 
         var clock = new Clock();
 
         while (window.IsOpen)
         {
-            float deltaTime = clock.Restart().AsSeconds();
+            deltaTime = clock.Restart().AsSeconds();
 
             window.DispatchEvents();
             gameScene.Input();
