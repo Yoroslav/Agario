@@ -1,15 +1,21 @@
-﻿using SFML.System;
-using Engine;
-using Agario;
+﻿using Agario;
+using SFML.Graphics;
+using SFML.System;
+using SFML.Window;
+using System;
+using System.Collections.Generic;
 
 namespace Game
 {
-    public class GameScene : Scene
+    public class GameScene
     {
         private Player _player;
         private List<Food> _foods;
         private List<Enemy> _enemies;
         private Random _random;
+        private RenderWindow _window;
+        private Clock _clock;
+        public static float deltaTime;
 
         public GameScene()
         {
@@ -18,35 +24,42 @@ namespace Game
             _enemies = new List<Enemy>();
             _random = new Random();
 
-            for (int i = 0; i < 100; i++)  
+            for (int i = 0; i < 100; i++)
             {
                 SpawnFood();
             }
-            for (int i = 0; i < 10; i++)  
+
+            for (int i = 0; i < 5; i++) 
             {
                 SpawnEnemy();
             }
+
+            _window = new RenderWindow(new VideoMode(1600, 1200), "Agar.io Clone");
+            _clock = new Clock();
+            _window.Closed += (sender, e) => _window.Close();
         }
 
-        private void SpawnFood()
+        public void Run()
         {
-            var position = new Vector2f(_random.Next(0, 1600), _random.Next(0, 1200)); 
-            _foods.Add(new Food(position));
+            while (_window.IsOpen)
+            {
+                 deltaTime = _clock.Restart().AsSeconds();
+
+                _window.DispatchEvents();
+
+                _player.HandleInput();  
+                _player.Update(deltaTime);
+                Update(deltaTime);
+
+                _window.Clear(Color.White);
+                Render();
+                _window.Display();
+            }
         }
 
-        private void SpawnEnemy()
+        private void Update(float deltaTime)
         {
-            var position = new Vector2f(_random.Next(0, 1600), _random.Next(0, 1200)); 
-            _enemies.Add(new Enemy(position));
-        }
-
-        public override void Input() => _player.HandleInput();
-
-        public override void Update(float deltaTime)
-        {
-            _player.Update(deltaTime);
-
-            for (int i = _enemies.Count - 1; i >= 0; i--)
+            for (int i = _enemies.Count - 1; i >= 0; i--) 
             {
                 if (_player.CheckCollision(_enemies[i]))
                 {
@@ -58,9 +71,14 @@ namespace Game
                     }
                     else
                     {
+                        _enemies[i].Grow();
                         _player.Reset();
                         return;
                     }
+                }
+                else
+                {
+                    _enemies[i].Update(_enemies, _player); 
                 }
             }
 
@@ -73,22 +91,29 @@ namespace Game
                     SpawnFood();
                 }
             }
-
-            foreach (var enemy in _enemies)
-            {
-                enemy.Update();
-            }
         }
 
-        public override void Render(GameWindow window)
+        private void Render()
         {
+            _window.Draw(_player.Shape);
+
             foreach (var food in _foods)
-                window.Draw(food.Shape);
+                _window.Draw(food.Shape);
 
             foreach (var enemy in _enemies)
-                window.Draw(enemy.Shape);
+                _window.Draw(enemy.Shape);
+        }
 
-            window.Draw(_player.Shape);
+        private void SpawnFood()
+        {
+            var position = new Vector2f(_random.Next(0, 1600), _random.Next(0, 1200));
+            _foods.Add(new Food(position));
+        }
+
+        private void SpawnEnemy()
+        {
+            var position = new Vector2f(_random.Next(0, 1600), _random.Next(0, 1200));
+            _enemies.Add(new Enemy(position));
         }
     }
 }
