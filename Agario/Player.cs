@@ -33,6 +33,40 @@ namespace Agario
 
             _direction = direction.Normalize();
         }
+        public void SwapWithClosestEnemy(List<Enemy> enemies)
+        {
+            if (enemies.Count == 0) return;
+
+            Enemy closestEnemy = null;
+            float minDistance = float.MaxValue;
+
+            foreach (var enemy in enemies)
+            {
+                Vector2f diff = Shape.Position - enemy.Shape.Position;
+                float distance = MathF.Sqrt(diff.X * diff.X + diff.Y * diff.Y);
+
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestEnemy = enemy;
+                }
+            }
+
+            if (closestEnemy != null)
+            {
+                Vector2f tempPosition = Shape.Position;
+                float tempRadius = Shape.Radius;
+
+                Shape.Position = closestEnemy.Shape.Position;
+                Shape.Radius = closestEnemy.Shape.Radius;
+                Shape.Origin = new Vector2f(Shape.Radius, Shape.Radius);
+
+                closestEnemy.Shape.Position = tempPosition;
+                closestEnemy.Shape.Radius = tempRadius;
+                closestEnemy.Shape.Origin = new Vector2f(tempRadius, tempRadius);
+            }
+        }
+
 
         public void Update(float deltaTime)
         {

@@ -1,6 +1,7 @@
 ﻿using Agario;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace Engine
 {
@@ -32,6 +33,11 @@ namespace Engine
         public void HandleInput()
         {
             _player.HandleInput();
+            if (Keyboard.IsKeyPressed(Keyboard.Key.F))
+            {
+                _player.SwapWithClosestEnemy(_enemies);
+            }
+
         }
 
         public void Update(float deltaTime)
