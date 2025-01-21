@@ -1,11 +1,8 @@
 ﻿using Agario;
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
-using System;
-using System.Collections.Generic;
 
-namespace Game
+namespace Engine
 {
     public class GameScene
     {
@@ -13,9 +10,6 @@ namespace Game
         private List<Food> _foods;
         private List<Enemy> _enemies;
         private Random _random;
-        private RenderWindow _window;
-        private Clock _clock;
-        public static float deltaTime;
 
         public GameScene()
         {
@@ -29,79 +23,72 @@ namespace Game
                 SpawnFood();
             }
 
-            for (int i = 0; i < 5; i++) 
+            for (int i = 0; i < 5; i++)
             {
                 SpawnEnemy();
             }
-
-            _window = new RenderWindow(new VideoMode(1600, 1200), "Agar.io Clone");
-            _clock = new Clock();
-            _window.Closed += (sender, e) => _window.Close();
         }
 
-        public void Run()
+        public void HandleInput()
         {
-            while (_window.IsOpen)
-            {
-                 deltaTime = _clock.Restart().AsSeconds();
-
-                _window.DispatchEvents();
-
-                _player.HandleInput();  
-                _player.Update(deltaTime);
-                Update(deltaTime);
-
-                _window.Clear(Color.White);
-                Render();
-                _window.Display();
-            }
+            _player.HandleInput();
         }
 
-        private void Update(float deltaTime)
+        public void Update(float deltaTime)
         {
-            for (int i = _enemies.Count - 1; i >= 0; i--) 
+            _player.Update(deltaTime);
+
+            for (int i = _enemies.Count - 1; i >= 0; i--)
             {
-                if (_player.CheckCollision(_enemies[i]))
+                if (_player.CheckCollision(_enemies[i].Shape))
                 {
-                    if (_player.Shape.Radius > _enemies[i].Shape.Radius)
-                    {
-                        _player.Grow();
-                        _enemies.RemoveAt(i);
-                        SpawnEnemy();
-                    }
-                    else
-                    {
-                        _enemies[i].Grow();
-                        _player.Reset();
-                        return;
-                    }
+                    HandlePlayerEnemyCollision(_player, _enemies[i]);
+                    continue;
                 }
-                else
-                {
-                    _enemies[i].Update(_enemies, _player); 
-                }
+
+                _enemies[i].Interact(_enemies, _foods, _player, deltaTime);
             }
 
             for (int i = _foods.Count - 1; i >= 0; i--)
             {
-                if (_player.CheckCollision(_foods[i]))
+                if (_player.CheckCollision(_foods[i].Shape))
                 {
+                    HandlePlayerFoodCollision(_player, _foods[i]);
                     _foods.RemoveAt(i);
-                    _player.Grow();
                     SpawnFood();
                 }
             }
         }
 
-        private void Render()
+        private void HandlePlayerEnemyCollision(Player player, Enemy enemy)
         {
-            _window.Draw(_player.Shape);
+            if (player.IsLargerThan(enemy))
+            {
+                player.Grow();
+                _enemies.Remove(enemy);
+                SpawnEnemy();
+            }
+            else
+            {
+                enemy.Grow();
+                player.MarkAsDefeated();
+            }
+        }
+
+        private void HandlePlayerFoodCollision(Player player, Food food)
+        {
+            player.Grow();
+        }
+
+        public void Render(RenderWindow window)
+        {
+            window.Draw(_player.Shape);
 
             foreach (var food in _foods)
-                _window.Draw(food.Shape);
+                window.Draw(food.Shape);
 
             foreach (var enemy in _enemies)
-                _window.Draw(enemy.Shape);
+                window.Draw(enemy.Shape);
         }
 
         private void SpawnFood()

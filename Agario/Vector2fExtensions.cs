@@ -8,14 +8,19 @@ namespace Source.Tools
         {
             float deltaX = second.X - source.X;
             float deltaY = second.Y - source.Y;
-            return deltaX * deltaX + deltaY * deltaY;  
+            return deltaX * deltaX + deltaY * deltaY;
         }
 
         public static Vector2f Normalize(this Vector2f source)
         {
             float magnitude = Magnitude(source);
-            if (magnitude == 0) return new Vector2f(0, 0);
-            return source / magnitude;
+            return magnitude > 0 ? source / magnitude : new Vector2f(0, 0);
+        }
+
+        public static bool IsColliding(this Vector2f source, float radius1, Vector2f target, float radius2)
+        {
+            float combinedRadius = radius1 + radius2;
+            return source.DistanceSquared(target) <= (combinedRadius * combinedRadius);
         }
 
         private static float Magnitude(Vector2f vector)

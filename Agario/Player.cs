@@ -14,7 +14,12 @@ namespace Agario
 
         public Player(Vector2f position)
         {
-            Shape = new CircleShape(20) { FillColor = Color.Blue, Position = position };
+            Shape = new CircleShape(20)
+            {
+                FillColor = Color.Blue,
+                Position = position
+            };
+            Shape.Origin = new Vector2f(20, 20);
         }
 
         public void HandleInput()
@@ -26,7 +31,7 @@ namespace Agario
             if (Keyboard.IsKeyPressed(Keyboard.Key.A)) direction.X -= 1;
             if (Keyboard.IsKeyPressed(Keyboard.Key.D)) direction.X += 1;
 
-            _direction = Normalize(direction);
+            _direction = direction.Normalize();
         }
 
         public void Update(float deltaTime)
@@ -34,40 +39,39 @@ namespace Agario
             Shape.Position += _direction * _speed * deltaTime;
 
             Shape.Position = new Vector2f(
-                Math.Clamp(Shape.Position.X, 0, 1600 - Shape.Radius * 2),
-                Math.Clamp(Shape.Position.Y, 0, 1200 - Shape.Radius * 2)
+                Math.Clamp(Shape.Position.X, Shape.Radius, 1600 - Shape.Radius),
+                Math.Clamp(Shape.Position.Y, Shape.Radius, 1200 - Shape.Radius)
             );
         }
 
-        public bool CheckCollision(Food food)
+        public bool CheckCollision(CircleShape other)
         {
-            float combinedRadius = Shape.Radius + food.Shape.Radius;
-            return Shape.Position.DistanceSquared(food.Shape.Position) <= (combinedRadius * combinedRadius);
+            return Shape.Position.IsColliding(Shape.Radius, other.Position, other.Radius);
         }
 
-        public bool CheckCollision(Enemy enemy)
+        public bool IsLargerThan(Enemy enemy)
         {
-            float combinedRadius = Shape.Radius + enemy.Shape.Radius;
-            return Shape.Position.DistanceSquared(enemy.Shape.Position) <= (combinedRadius * combinedRadius);
+            return Shape.Radius > enemy.Shape.Radius;
         }
 
         public void Grow()
         {
             Shape.Radius += 2;
             Shape.Origin = new Vector2f(Shape.Radius, Shape.Radius);
-            Score += 10;  
+            Score += 10;
         }
 
-        private Vector2f Normalize(Vector2f vector)
+        public void MarkAsDefeated()
         {
-            float length = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
-            return length > 0 ? vector / length : vector;
+            Reset();
         }
 
         public void Reset()
         {
-            Shape.Position = new Vector2f(400, 300);
+            Shape.Position = new Vector2f(800, 600); 
             Shape.Radius = 20;
+            Shape.Origin = new Vector2f(20, 20);
+            Score = 0;
         }
     }
 }

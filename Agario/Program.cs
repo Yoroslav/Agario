@@ -1,10 +1,10 @@
-﻿using Game;
+﻿using Engine;
 
 class Program
 {
     static void Main(string[] args)
     {
-        var game = new GameScene();
-        game.Run();
+        GameLoop gameLoop = new GameLoop();
+        gameLoop.Run();
     }
 }
