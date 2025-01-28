@@ -11,13 +11,15 @@ namespace Engine
         private List<Food> _foods;
         private List<Enemy> _enemies;
         private Random _random;
+        private InputHandler _inputHandler;
 
         public GameScene()
         {
-            _player = new Player(new Vector2f(800, 600));
+            _player = new Player(Player.GetRandomPosition(1600, 1200, 20));
             _foods = new List<Food>();
             _enemies = new List<Enemy>();
             _random = new Random();
+            _inputHandler = new InputHandler(_player, _enemies);
 
             for (int i = 0; i < 100; i++)
             {
@@ -32,12 +34,7 @@ namespace Engine
 
         public void HandleInput()
         {
-            _player.HandleInput();
-            if (Keyboard.IsKeyPressed(Keyboard.Key.F))
-            {
-                _player.SwapWithClosestEnemy(_enemies);
-            }
-
+            _inputHandler.HandleInput();
         }
 
         public void Update(float deltaTime)

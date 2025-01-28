@@ -54,16 +54,8 @@ namespace Agario
 
             if (closestEnemy != null)
             {
-                Vector2f tempPosition = Shape.Position;
-                float tempRadius = Shape.Radius;
-
-                Shape.Position = closestEnemy.Shape.Position;
-                Shape.Radius = closestEnemy.Shape.Radius;
-                Shape.Origin = new Vector2f(Shape.Radius, Shape.Radius);
-
-                closestEnemy.Shape.Position = tempPosition;
-                closestEnemy.Shape.Radius = tempRadius;
-                closestEnemy.Shape.Origin = new Vector2f(tempRadius, tempRadius);
+                (Shape.Position, Shape.Radius, Shape.Origin, closestEnemy.Shape.Position, closestEnemy.Shape.Radius, closestEnemy.Shape.Origin) =
+                (closestEnemy.Shape.Position, closestEnemy.Shape.Radius, closestEnemy.Shape.Origin, Shape.Position, Shape.Radius, Shape.Origin);
             }
         }
 
@@ -102,10 +94,23 @@ namespace Agario
 
         public void Reset()
         {
-            Shape.Position = new Vector2f(800, 600); 
+            Shape.Position = GetRandomPosition(800, 600, 20);
             Shape.Radius = 20;
             Shape.Origin = new Vector2f(20, 20);
             Score = 0;
+        }
+
+        public static Vector2f GetRandomPosition(float maxWidth, float maxHeight, float radius)
+        {
+            Random random = new Random();
+            float x = (float)random.NextDouble() * (maxWidth - 2 * radius) + radius;
+            float y = (float)random.NextDouble() * (maxHeight - 2 * radius) + radius;
+            return new Vector2f(x, y);
+        }
+
+        public void Move(Vector2f direction)
+        {
+            _direction = direction.Normalize();
         }
     }
 }
