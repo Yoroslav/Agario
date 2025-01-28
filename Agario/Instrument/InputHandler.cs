@@ -1,6 +1,5 @@
 ﻿using SFML.System;
 using SFML.Window;
-using System.Windows.Input;
 
 namespace Agario
 {
