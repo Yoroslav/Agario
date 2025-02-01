@@ -1,7 +1,7 @@
-﻿using SFML.Graphics;
-using SFML.Window;
+﻿using Agario;
+using SFML.Graphics;
 using SFML.System;
-using Agario;
+using SFML.Window;
 
 namespace Engine
 {

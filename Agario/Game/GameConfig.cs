@@ -13,5 +13,10 @@ namespace Agario
         public float PlayerGrowthFactor { get; set; } = 2.0f;
         public float EnemyGrowthFactor { get; set; } = 2.0f;
         public Color BackgroundColor { get; set; } = new Color(255, 255, 255, 255);
+        public int MaxEnemies { get; set; } = 5;
+        public float EnemySpawnRate { get; set; } = 5.0f;
+        public float PlayerInitialRadius { get; set; } = 20.0f;
+        public float FoodRadius { get; set; } = 10.0f;
+        public float EnemyInitialRadius { get; set; } = 20.0f;
     }
 }

@@ -12,5 +12,10 @@
     "G": 255,
     "B": 255,
     "A": 255
-  }
+  },
+  "MaxEnemies": 5,
+  "EnemySpawnRate": 5.0,
+  "PlayerInitialRadius": 20.0,
+  "FoodRadius": 10.0,
+  "EnemyInitialRadius": 20.0
 }
