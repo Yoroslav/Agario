@@ -7,8 +7,13 @@ namespace Agario
     public abstract class GameEntity
     {
         public CircleShape Shape { get; protected set; }
-        protected float _growthFactor = 2.0f;
+        protected float _growthFactor;
         protected Vector2f _direction;
+
+        public GameEntity(float growthFactor)
+        {
+            _growthFactor = growthFactor;
+        }
 
         public virtual void Update(float deltaTime)
         {

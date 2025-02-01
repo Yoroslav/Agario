@@ -8,12 +8,15 @@ namespace Agario
     public class Player
     {
         public CircleShape Shape { get; private set; }
-        private float _speed = 200f;
+        private float _speed;
         private Vector2f _direction;
         public int Score { get; private set; } = 0;
+        private float _growthFactor;
 
-        public Player(Vector2f position)
+        public Player(Vector2f position, float speed, float growthFactor)
         {
+            _speed = speed;
+            _growthFactor = growthFactor;
             Shape = new CircleShape(20)
             {
                 FillColor = Color.Blue,
@@ -33,6 +36,7 @@ namespace Agario
 
             _direction = direction.Normalize();
         }
+
         public void SwapWithClosestEnemy(List<Enemy> enemies)
         {
             if (enemies.Count == 0) return;
@@ -59,7 +63,6 @@ namespace Agario
             }
         }
 
-
         public void Update(float deltaTime)
         {
             Shape.Position += _direction * _speed * deltaTime;
@@ -82,7 +85,7 @@ namespace Agario
 
         public void Grow()
         {
-            Shape.Radius += 2;
+            Shape.Radius += _growthFactor;
             Shape.Origin = new Vector2f(Shape.Radius, Shape.Radius);
             Score += 10;
         }

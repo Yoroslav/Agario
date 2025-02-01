@@ -7,9 +7,11 @@ namespace Agario
     public class Enemy : GameEntity
     {
         private static Random _random = new Random();
+        private float _speed;
 
-        public Enemy(Vector2f position)
+        public Enemy(Vector2f position, float speed, float growthFactor) : base(growthFactor)
         {
+            _speed = speed;
             Shape = new CircleShape(45) { FillColor = Color.Red, Position = position };
             Shape.Origin = new Vector2f(45, 45);
             _direction = new Vector2f((float)(_random.NextDouble() * 2 - 1), (float)(_random.NextDouble() * 2 - 1)).Normalize();
@@ -18,13 +20,14 @@ namespace Agario
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
+            Shape.Position += _direction * _speed * deltaTime;
         }
 
         public void Interact(List<Enemy> enemies, List<Food> foods, Player player, float deltaTime)
         {
             Vector2f directionToPlayer = (player.Shape.Position - Shape.Position).Normalize();
 
-            Shape.Position += directionToPlayer * 100 * deltaTime;
+            Shape.Position += directionToPlayer * _speed * deltaTime;
 
             for (int i = enemies.Count - 1; i >= 0; i--)
             {

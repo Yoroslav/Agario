@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.Window;
 using SFML.System;
+using Agario;
 
 namespace Engine
 {
@@ -9,12 +10,14 @@ namespace Engine
         private RenderWindow _window;
         private Clock _clock;
         private GameScene _gameScene;
+        private GameConfig _config;
 
-        public GameLoop()
+        public GameLoop(GameConfig config)
         {
-            _window = new RenderWindow(new VideoMode(1600, 1200), "Agar.io Clone");
+            _config = config;
+            _window = new RenderWindow(new VideoMode((uint)_config.ScreenWidth, (uint)_config.ScreenHeight), "Agar.io Clone");
             _clock = new Clock();
-            _gameScene = new GameScene();
+            _gameScene = new GameScene(_config);
             _window.Closed += (sender, e) => _window.Close();
         }
 
@@ -29,7 +32,7 @@ namespace Engine
                 _gameScene.HandleInput();
                 _gameScene.Update(deltaTime);
 
-                _window.Clear(Color.White);
+                _window.Clear(_config.BackgroundColor);
                 _gameScene.Render(_window);
                 _window.Display();
             }
