@@ -30,7 +30,7 @@ namespace Agario
                 SpawnFood();
             }
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < _config.MaxEnemies; i++)
             {
                 SpawnEnemy();
             }
@@ -108,7 +108,8 @@ namespace Agario
         private void SpawnEnemy()
         {
             var position = new Vector2f(_random.Next(0, _config.ScreenWidth), _random.Next(0, _config.ScreenHeight));
-            _enemies.Add(new Enemy(position, _config.EnemySpeed, _config.EnemyGrowthFactor));
+            _enemies.Add(new Enemy(position, _config.EnemySpeed, _config.EnemyGrowthFactor, _config.EnemyAggression));  
         }
+
     }
 }

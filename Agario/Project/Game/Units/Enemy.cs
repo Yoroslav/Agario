@@ -2,6 +2,7 @@
 using SFML.Graphics;
 using SFML.System;
 using Source.Tools;
+using System;
 
 namespace Agario
 {
@@ -9,10 +10,12 @@ namespace Agario
     {
         private static Random _random = new Random();
         private float _speed;
+        private float _aggression;  
 
-        public Enemy(Vector2f position, float speed, float growthFactor) : base(growthFactor)
+        public Enemy(Vector2f position, float speed, float growthFactor, float aggression) : base(growthFactor)
         {
             _speed = speed;
+            _aggression = aggression;  
             Shape = new CircleShape(45) { FillColor = Color.Red, Position = position };
             Shape.Origin = new Vector2f(45, 45);
             _direction = new Vector2f((float)(_random.NextDouble() * 2 - 1), (float)(_random.NextDouble() * 2 - 1)).Normalize();
@@ -27,9 +30,7 @@ namespace Agario
         public void Interact(List<Enemy> enemies, List<Food> foods, Player player, float deltaTime)
         {
             Vector2f directionToPlayer = (player.Shape.Position - Shape.Position).Normalize();
-
-            Shape.Position += directionToPlayer * _speed * deltaTime;
-
+            Shape.Position += directionToPlayer * _speed * deltaTime * _aggression;
             for (int i = enemies.Count - 1; i >= 0; i--)
             {
                 if (this != enemies[i] && CheckCollision(enemies[i].Shape))
@@ -50,7 +51,6 @@ namespace Agario
                     player.Reset();
                 }
             }
-
             for (int i = foods.Count - 1; i >= 0; i--)
             {
                 if (CheckCollision(foods[i].Shape))
