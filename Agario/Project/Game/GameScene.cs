@@ -1,11 +1,13 @@
-﻿using Agario;
+﻿using Agario.Entities;
+using Engine;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using System.Collections.Generic;
 
-namespace Engine
+namespace Agario
 {
-    public class GameScene
+    public class GameScene : IGameRules
     {
         private Player _player;
         private List<Food> _foods;
@@ -14,7 +16,7 @@ namespace Engine
         private InputHandler _inputHandler;
         private GameConfig _config;
 
-        public GameScene(GameConfig config)
+        public void Initialize(GameConfig config)
         {
             _config = config;
             _player = new Player(Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20), _config.PlayerSpeed, _config.PlayerGrowthFactor);

@@ -1,7 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 
-namespace Agario
+namespace Agario.Entities
 {
     public class Food
     {
@@ -9,7 +9,9 @@ namespace Agario
 
         public Food(Vector2f position)
         {
-            Shape = new CircleShape(5) { FillColor = Color.Green, Position = position };
+            Shape = new CircleShape(5);
+            Shape.Position = position;
+            Shape.FillColor = Color.Green;
         }
     }
 }

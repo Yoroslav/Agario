@@ -1,4 +1,6 @@
-﻿using SFML.System;
+﻿using Agario.Entities;
+using SFML.System;
+using System.Collections.Generic;
 
 namespace Agario
 {
@@ -18,10 +20,7 @@ namespace Agario
             _direction = direction;
         }
 
-        public void Execute()
-        {
-            _player.Move(_direction);
-        }
+        public void Execute() => _player.Move(_direction);
     }
 
     public class SwapCommand : ICommand
@@ -35,24 +34,14 @@ namespace Agario
             _enemies = enemies;
         }
 
-        public void Execute()
-        {
-            _player.SwapWithClosestEnemy(_enemies);
-        }
+        public void Execute() => _player.SwapWithClosestEnemy(_enemies);
     }
 
     public class DefeatCommand : ICommand
     {
         private Player _player;
 
-        public DefeatCommand(Player player)
-        {
-            _player = player;
-        }
-
-        public void Execute()
-        {
-            _player.MarkAsDefeated();
-        }
+        public DefeatCommand(Player player) => _player = player;
+        public void Execute() => _player.MarkAsDefeated();
     }
 }

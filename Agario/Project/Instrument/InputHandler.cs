@@ -1,4 +1,5 @@
-﻿using SFML.System;
+﻿using Agario.Entities;
+using SFML.System;
 using SFML.Window;
 
 namespace Agario

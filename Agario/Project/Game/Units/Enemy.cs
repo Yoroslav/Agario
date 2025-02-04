@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using Agario.Entities;
+using SFML.Graphics;
 using SFML.System;
 using Source.Tools;
 

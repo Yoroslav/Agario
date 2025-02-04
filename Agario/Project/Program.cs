@@ -7,7 +7,8 @@ class Program
     {
         var config = ConfigLoader.LoadConfig("Roboto_Regular.json");
 
-        GameLoop gameLoop = new GameLoop(config);
+        IGameRules agarioGame = new GameScene();
+        GameLoop gameLoop = new GameLoop(config, agarioGame);
         gameLoop.Run();
     }
 }

@@ -1,21 +1,9 @@
 {
-  "ScreenWidth": 1600,
-  "ScreenHeight": 1200,
-  "InitialFoodCount": 100,
-  "FoodSpawnRate": 1.0,
-  "PlayerSpeed": 200.0,
-  "EnemySpeed": 100.0,
-  "PlayerGrowthFactor": 2.0,
-  "EnemyGrowthFactor": 2.0,
-  "BackgroundColor": {
-    "R": 255,
-    "G": 255,
-    "B": 255,
-    "A": 255
-  },
-  "MaxEnemies": 5,
-  "EnemySpawnRate": 5.0,
-  "PlayerInitialRadius": 20.0,
-  "FoodRadius": 10.0,
-  "EnemyInitialRadius": 20.0
+  "ScreenWidth": 800,
+  "ScreenHeight": 600,
+  "PlayerSpeed": 100,
+  "PlayerGrowthFactor": 5,
+  "EnemySpeed": 50,
+  "EnemyGrowthFactor": 3,
+  "InitialFoodCount": 20
 }

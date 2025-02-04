@@ -1,7 +1,7 @@
 ﻿using SFML.Graphics;
 using SFML.Window;
 
-namespace Engine
+namespace Agario.Instrument
 {
     public class GameWindow
     {
