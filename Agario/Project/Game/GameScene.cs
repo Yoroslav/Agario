@@ -1,11 +1,15 @@
 ﻿using Agario.Entities;
 using Engine;
+using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Agario
 {
-    public class GameScene : IGameRules
+    public class GameScene : IGameRules, IDisposable
     {
         private Player _player;
         private List<Food> _foods;
@@ -18,28 +22,39 @@ namespace Agario
         public void Initialize(GameConfig config)
         {
             _config = config;
-            _player = new Player(Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20), _config.PlayerSpeed, _config.PlayerGrowthFactor);
+            _player = new Player(
+                Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20),
+                _config.PlayerSpeed,
+                _config.PlayerGrowthFactor
+            );
+
             _foods = new List<Food>();
             _enemies = new List<Enemy>();
             _random = new Random();
             _inputHandler = new InputHandler(_player, _enemies);
             _soundSystem = new SoundSystem();
-            _soundSystem.LoadSound("game_start", "path_to_game_start_sound.wav");
-            _soundSystem.LoadSound("eat_food", "path_to_eat_food_sound.wav");
-            _soundSystem.LoadSound("eat_enemy", "path_to_eat_enemy_sound.wav");
-            _soundSystem.LoadSound("player_defeated", "path_to_player_defeated_sound.wav");
 
+            LoadSounds();
             _soundSystem.PlaySound("game_start");
 
+            InitializeEntities();
+        }
+
+        private void LoadSounds()
+        {
+            _soundSystem.LoadSound("game_start", "Sound/game_start.wav");
+            _soundSystem.LoadSound("eat_food", "Sound/eat_food.wav");
+            _soundSystem.LoadSound("eat_enemy", "Sound/eat_enemy.wav");
+            _soundSystem.LoadSound("player_defeated", "Sound/player_defeated.wav");
+        }
+
+        private void InitializeEntities()
+        {
             for (int i = 0; i < _config.InitialFoodCount; i++)
-            {
                 SpawnFood();
-            }
 
             for (int i = 0; i < _config.MaxEnemies; i++)
-            {
                 SpawnEnemy();
-            }
         }
 
         public void HandleInput()
@@ -51,6 +66,17 @@ namespace Agario
         {
             _player.Update(deltaTime);
 
+            _foods.RemoveAll(food =>
+            {
+                if (_player.CheckCollision(food.Shape))
+                {
+                    HandlePlayerFoodCollision(_player, food);
+                    SpawnFood();
+                    return true;
+                }
+                return false;
+            });
+
             for (int i = _enemies.Count - 1; i >= 0; i--)
             {
                 if (_player.CheckCollision(_enemies[i].Shape))
@@ -58,18 +84,7 @@ namespace Agario
                     HandlePlayerEnemyCollision(_player, _enemies[i]);
                     continue;
                 }
-
                 _enemies[i].Interact(_enemies, _foods, _player, deltaTime);
-            }
-
-            for (int i = _foods.Count - 1; i >= 0; i--)
-            {
-                if (_player.CheckCollision(_foods[i].Shape))
-                {
-                    HandlePlayerFoodCollision(_player, _foods[i]);
-                    _foods.RemoveAt(i);
-                    SpawnFood();
-                }
             }
         }
 
@@ -80,13 +95,13 @@ namespace Agario
                 player.Grow();
                 _enemies.Remove(enemy);
                 SpawnEnemy();
-                _soundSystem.PlaySound("eat_enemy"); 
+                _soundSystem.PlaySound("eat_enemy");
             }
             else
             {
                 enemy.Grow();
                 player.MarkAsDefeated();
-                _soundSystem.PlaySound("player_defeated"); 
+                _soundSystem.PlaySound("player_defeated");
             }
         }
 
@@ -118,6 +133,11 @@ namespace Agario
         {
             var position = new Vector2f(_random.Next(0, _config.ScreenWidth), _random.Next(0, _config.ScreenHeight));
             _enemies.Add(new Enemy(position, _config.EnemySpeed, _config.EnemyGrowthFactor, _config.EnemyAggression));
+        }
+
+        public void Dispose()
+        {
+            _soundSystem.Dispose();
         }
     }
 }

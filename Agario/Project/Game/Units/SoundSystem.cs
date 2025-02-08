@@ -1,45 +1,81 @@
 ﻿using SFML.Audio;
-using System.Collections.Generic;
 
-public class SoundSystem
+public class SoundSystem : IDisposable
 {
-    private Dictionary<string, SoundBuffer> soundBuffers;
-    private Dictionary<string, Sound> sounds;
+    private Dictionary<string, SoundBuffer> _soundBuffers;
+    private Dictionary<string, Sound> _sounds;
 
     public SoundSystem()
     {
-        soundBuffers = new Dictionary<string, SoundBuffer>();
-        sounds = new Dictionary<string, Sound>();
+        _soundBuffers = new Dictionary<string, SoundBuffer>();
+        _sounds = new Dictionary<string, Sound>();
     }
 
     public void LoadSound(string name, string filePath)
     {
-        SoundBuffer buffer = new SoundBuffer(filePath);
-        soundBuffers[name] = buffer;
-        sounds[name] = new Sound(buffer);
+        if (!_soundBuffers.ContainsKey(name))
+        {
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    var buffer = new SoundBuffer(filePath);
+                    _soundBuffers[name] = buffer;
+                    _sounds[name] = new Sound(buffer);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка загрузки звука {name}: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Файл звука не найден: {filePath}");
+            }
+        }
     }
 
     public void PlaySound(string name)
     {
-        if (sounds.ContainsKey(name))
+        if (_sounds.TryGetValue(name, out var sound))
         {
-            sounds[name].Play();
+            sound.Play();
         }
     }
 
     public void StopSound(string name)
     {
-        if (sounds.ContainsKey(name))
+        if (_sounds.TryGetValue(name, out var sound))
         {
-            sounds[name].Stop();
+            sound.Stop();
         }
     }
 
     public void SetLoop(string name, bool loop)
     {
-        if (sounds.ContainsKey(name))
+        if (_sounds.TryGetValue(name, out var sound))
         {
-            sounds[name].Loop = loop;
+            sound.Loop = loop;
         }
+    }
+
+    public void SetVolume(string name, float volume)
+    {
+        if (_sounds.TryGetValue(name, out var sound))
+        {
+            sound.Volume = Math.Clamp(volume, 0, 100);
+        }
+    }
+
+    public void Dispose()
+    {
+        foreach (var sound in _sounds.Values)
+            sound.Dispose();
+
+        foreach (var buffer in _soundBuffers.Values)
+            buffer.Dispose();
+
+        _sounds.Clear();
+        _soundBuffers.Clear();
     }
 }
