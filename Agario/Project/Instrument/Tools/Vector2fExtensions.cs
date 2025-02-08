@@ -17,9 +17,11 @@ namespace Source.Tools
             return length > 0 ? source / length : new Vector2f(0, 0);
         }
 
-        public static bool IsColliding(this Vector2f aPos, float aRadius, Vector2f bPos, float bRadius)
+        public static float DistanceSquared(this Vector2f a, Vector2f b)
         {
-            return aPos.DistanceTo(bPos) < (aRadius + bRadius);
+            float dx = a.X - b.X;
+            float dy = a.Y - b.Y;
+            return dx * dx + dy * dy;
         }
     }
 }

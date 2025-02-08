@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Project\Source\**" />
+    <EmbeddedResource Remove="Project\Source\**" />
+    <None Remove="Project\Source\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SFML.Net" Version="2.6.0" />
   </ItemGroup>
 

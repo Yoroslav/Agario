@@ -29,7 +29,7 @@ namespace Agario
 
         public bool CheckCollision(CircleShape other)
         {
-            return Shape.Position.IsColliding(Shape.Radius, other.Position, other.Radius);
+            return Shape.IsColliding(other);
         }
 
         protected void HandleWallCollision()

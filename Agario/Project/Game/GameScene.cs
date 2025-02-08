@@ -2,8 +2,6 @@
 using Engine;
 using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
-using System.Collections.Generic;
 
 namespace Agario
 {
@@ -15,6 +13,7 @@ namespace Agario
         private Random _random;
         private InputHandler _inputHandler;
         private GameConfig _config;
+        private SoundSystem _soundSystem;
 
         public void Initialize(GameConfig config)
         {
@@ -24,6 +23,13 @@ namespace Agario
             _enemies = new List<Enemy>();
             _random = new Random();
             _inputHandler = new InputHandler(_player, _enemies);
+            _soundSystem = new SoundSystem();
+            _soundSystem.LoadSound("game_start", "path_to_game_start_sound.wav");
+            _soundSystem.LoadSound("eat_food", "path_to_eat_food_sound.wav");
+            _soundSystem.LoadSound("eat_enemy", "path_to_eat_enemy_sound.wav");
+            _soundSystem.LoadSound("player_defeated", "path_to_player_defeated_sound.wav");
+
+            _soundSystem.PlaySound("game_start");
 
             for (int i = 0; i < _config.InitialFoodCount; i++)
             {
@@ -74,17 +80,20 @@ namespace Agario
                 player.Grow();
                 _enemies.Remove(enemy);
                 SpawnEnemy();
+                _soundSystem.PlaySound("eat_enemy"); 
             }
             else
             {
                 enemy.Grow();
                 player.MarkAsDefeated();
+                _soundSystem.PlaySound("player_defeated"); 
             }
         }
 
         private void HandlePlayerFoodCollision(Player player, Food food)
         {
             player.Grow();
+            _soundSystem.PlaySound("eat_food");
         }
 
         public void Render(RenderWindow window)
@@ -108,8 +117,7 @@ namespace Agario
         private void SpawnEnemy()
         {
             var position = new Vector2f(_random.Next(0, _config.ScreenWidth), _random.Next(0, _config.ScreenHeight));
-            _enemies.Add(new Enemy(position, _config.EnemySpeed, _config.EnemyGrowthFactor, _config.EnemyAggression));  
+            _enemies.Add(new Enemy(position, _config.EnemySpeed, _config.EnemyGrowthFactor, _config.EnemyAggression));
         }
-
     }
 }
