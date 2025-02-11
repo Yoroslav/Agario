@@ -1,4 +1,5 @@
 ﻿using Agario.Entities;
+using Agario.Project.Game.Configs;
 using Engine;
 using SFML.Audio;
 using SFML.Graphics;
@@ -19,6 +20,11 @@ namespace Agario
         private GameConfig _config;
         private SoundSystem _soundSystem;
 
+        public GameScene(SoundSystem soundSystem)
+        {
+            _soundSystem = soundSystem;
+        }
+
         public void Initialize(GameConfig config)
         {
             _config = config;
@@ -32,20 +38,19 @@ namespace Agario
             _enemies = new List<Enemy>();
             _random = new Random();
             _inputHandler = new InputHandler(_player, _enemies);
-            _soundSystem = new SoundSystem();
 
             LoadSounds();
-            _soundSystem.PlaySound("game_start");
+            _soundSystem.PlaySound(AudioConfig.StartSound);
 
             InitializeEntities();
         }
 
         private void LoadSounds()
         {
-            _soundSystem.LoadSound("game_start", "Sound/game_start.wav");
-            _soundSystem.LoadSound("eat_food", "Sound/eat_food.wav");
-            _soundSystem.LoadSound("eat_enemy", "Sound/eat_enemy.wav");
-            _soundSystem.LoadSound("player_defeated", "Sound/player_defeated.wav");
+            _soundSystem.LoadSound(AudioConfig.StartSound);
+            _soundSystem.LoadSound(AudioConfig.EatFoodSound);
+            _soundSystem.LoadSound(AudioConfig.EatEnemySound);
+            _soundSystem.LoadSound(AudioConfig.PlayerDefeated);
         }
 
         private void InitializeEntities()
@@ -95,20 +100,20 @@ namespace Agario
                 player.Grow();
                 _enemies.Remove(enemy);
                 SpawnEnemy();
-                _soundSystem.PlaySound("eat_enemy");
+                _soundSystem.PlaySound(AudioConfig.EatEnemySound);
             }
             else
             {
                 enemy.Grow();
                 player.MarkAsDefeated();
-                _soundSystem.PlaySound("player_defeated");
+                _soundSystem.PlaySound(AudioConfig.PlayerDefeated);
             }
         }
 
         private void HandlePlayerFoodCollision(Player player, Food food)
         {
             player.Grow();
-            _soundSystem.PlaySound("eat_food");
+            _soundSystem.PlaySound(AudioConfig.EatFoodSound);
         }
 
         public void Render(RenderWindow window)

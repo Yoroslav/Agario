@@ -1,5 +1,7 @@
 ﻿using Agario;
+using Agario.Project.Game.Configs;
 using Engine;
+using System.Resources;
 
 class Program
 {
@@ -7,7 +9,14 @@ class Program
     {
         var config = ConfigLoader.LoadConfig("Roboto_Regular.json");
 
-        IGameRules agarioGame = new GameScene();
+        // Створення ResourceManager для доступу до ресурсів
+        ResourceManager resourceManager = new ResourceManager("Agario.Sound", typeof(Program).Assembly);
+
+        var audioManager = new SoundSystem(resourceManager);
+        audioManager.LoadSound(AudioConfig.StartSound);
+        audioManager.PlaySound(AudioConfig.StartSound);
+
+        IGameRules agarioGame = new GameScene(audioManager);
         GameLoop gameLoop = new GameLoop(config, agarioGame);
         gameLoop.Run();
     }
