@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using SFML.Audio;
+﻿using SFML.Audio;
 using System.Resources;
 
 public class SoundSystem : IDisposable

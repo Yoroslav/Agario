@@ -9,7 +9,6 @@ class Program
     {
         var config = ConfigLoader.LoadConfig("Roboto_Regular.json");
 
-        // Створення ResourceManager для доступу до ресурсів
         ResourceManager resourceManager = new ResourceManager("Agario.Sound", typeof(Program).Assembly);
 
         var audioManager = new SoundSystem(resourceManager);

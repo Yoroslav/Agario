@@ -15,11 +15,13 @@ namespace Engine
         public GameLoop(GameConfig config, IGameRules gameRules)
         {
             _config = config;
-            _window = new RenderWindow(new VideoMode((uint)_config.ScreenWidth, (uint)_config.ScreenHeight), "Agar.io Clone");
-            _clock = new Clock();
             _gameRules = gameRules;
-            _gameRules.Initialize(config);
+
+            _window = new RenderWindow(new VideoMode((uint)_config.ScreenWidth, (uint)_config.ScreenHeight), "Agar.io Clone");
             _window.Closed += (sender, e) => _window.Close();
+
+            _clock = new Clock();
+            _gameRules.Initialize(config);
         }
 
         public void Run()
@@ -29,7 +31,6 @@ namespace Engine
                 float deltaTime = _clock.Restart().AsSeconds();
 
                 _window.DispatchEvents();
-
                 _gameRules.HandleInput();
                 _gameRules.Update(deltaTime);
 

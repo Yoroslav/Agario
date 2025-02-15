@@ -2,18 +2,20 @@
 using SFML.System;
 using SFML.Window;
 using Source.Tools;
+using Agario.Project.Game.Animations;
 
 namespace Agario
 {
     public class Player
     {
         public CircleShape Shape { get; private set; }
+        public AnimationSystem Animation { get; private set; }
         private float _speed;
         private Vector2f _direction;
         public int Score { get; private set; } = 0;
         private float _growthFactor;
 
-        public Player(Vector2f position, float speed, float growthFactor)
+        public Player(Vector2f position, float speed, float growthFactor, Texture animationTexture)
         {
             _speed = speed;
             _growthFactor = growthFactor;
@@ -23,18 +25,23 @@ namespace Agario
                 Position = position
             };
             Shape.Origin = new Vector2f(20, 20);
+
+            Animation = new AnimationSystem(animationTexture, 180, 180);
         }
 
         public void HandleInput()
         {
-            var direction = new Vector2f();
+            _direction = new Vector2f();
 
-            if (Keyboard.IsKeyPressed(Keyboard.Key.W)) direction.Y -= 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.S)) direction.Y += 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A)) direction.X -= 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.D)) direction.X += 1;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.W)) _direction.Y -= 1;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.S)) _direction.Y += 1;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.A)) _direction.X -= 1;
+            if (Keyboard.IsKeyPressed(Keyboard.Key.D)) _direction.X += 1;
 
-            _direction = direction.Normalize();
+            if (_direction != new Vector2f(0, 0))
+            {
+                _direction = _direction.Normalize();
+            }
         }
 
         public void SwapWithClosestEnemy(List<Enemy> enemies)
@@ -65,12 +72,22 @@ namespace Agario
 
         public void Update(float deltaTime)
         {
-            Shape.Position += _direction * _speed * deltaTime;
-
+            HandleInput();
+            if (_direction != new Vector2f(0, 0))
+            {
+                Shape.Position += _direction * _speed * deltaTime;
+            }
             Shape.Position = new Vector2f(
                 Math.Clamp(Shape.Position.X, Shape.Radius, 1600 - Shape.Radius),
                 Math.Clamp(Shape.Position.Y, Shape.Radius, 1200 - Shape.Radius)
             );
+
+            Animation.Update(deltaTime, Shape.Position);
+        }
+
+        public void Draw(RenderWindow window)
+        {
+            Animation.Draw(window, RenderStates.Default);
         }
 
         public bool CheckCollision(CircleShape other)

@@ -19,6 +19,7 @@ namespace Agario
         private InputHandler _inputHandler;
         private GameConfig _config;
         private SoundSystem _soundSystem;
+        private Texture _playerTexture;
 
         public GameScene(SoundSystem soundSystem)
         {
@@ -28,10 +29,13 @@ namespace Agario
         public void Initialize(GameConfig config)
         {
             _config = config;
+            _playerTexture = new Texture("Assets/character.png");
+
             _player = new Player(
                 Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20),
                 _config.PlayerSpeed,
-                _config.PlayerGrowthFactor
+                _config.PlayerGrowthFactor,
+                _playerTexture
             );
 
             _foods = new List<Food>();
@@ -119,7 +123,7 @@ namespace Agario
         public void Render(RenderWindow window)
         {
             window.Clear(_config.BackgroundColor);
-            window.Draw(_player.Shape);
+            _player.Animation.Draw(window, RenderStates.Default);
 
             foreach (var food in _foods)
                 window.Draw(food.Shape);
@@ -146,3 +150,4 @@ namespace Agario
         }
     }
 }
+
