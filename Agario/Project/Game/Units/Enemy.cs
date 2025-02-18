@@ -3,7 +3,6 @@ using Agario.Project.Game.Animations;
 using SFML.Graphics;
 using SFML.System;
 using Source.Tools;
-using System;
 using System.Collections.Generic;
 
 namespace Agario
@@ -14,25 +13,22 @@ namespace Agario
         private float _speed;
         private float _aggression;
         public Animator Animator { get; private set; }
-        private Vector2f _direction;
 
         public Enemy(Vector2f position, float speed, float growthFactor, float aggression, Animator animator) : base(growthFactor)
         {
             _speed = speed;
             _aggression = aggression;
             Animator = animator;
-            Shape = new CircleShape(45) { FillColor = Color.Red, Position = position };
+            Shape = new CircleShape(90) { Position = position };
             Shape.Origin = new Vector2f(45, 45);
-            _direction = new Vector2f((float)(_random.NextDouble() * 2 - 1), (float)(_random.NextDouble() * 2 - 1)).Normalize();
         }
 
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-            Shape.Position += _direction * _speed * deltaTime;
             Animator.IsMoving = true;
             Animator.Update(deltaTime, Shape.Position);
-            Animator.SetScale(Shape.Radius / 45f, Shape.Radius / 45f);
+            Animator.SetScale(Shape.Radius / 15f, Shape.Radius / 15f);
         }
 
         public void Draw(RenderWindow window)

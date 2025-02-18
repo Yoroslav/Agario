@@ -4,7 +4,6 @@ using Agario.Project.Game.Configs;
 using Engine;
 using SFML.Graphics;
 using SFML.System;
-using System;
 using System.Collections.Generic;
 
 namespace Agario
@@ -71,6 +70,15 @@ namespace Agario
         {
             _player.Update(deltaTime);
 
+            foreach (var food in _foods)
+                food.Update(deltaTime);
+
+            foreach (var enemy in _enemies)
+            {
+                enemy.Update(deltaTime);
+                enemy.Interact(_enemies, _foods, _player, deltaTime);
+            }
+
             _foods.RemoveAll(food =>
             {
                 if (_player.CheckCollision(food.Shape))
@@ -89,7 +97,6 @@ namespace Agario
                     HandlePlayerEnemyCollision(_player, _enemies[i]);
                     continue;
                 }
-                _enemies[i].Interact(_enemies, _foods, _player, deltaTime);
             }
         }
 
@@ -131,10 +138,10 @@ namespace Agario
             _player.Animator.Draw(window, RenderStates.Default);
 
             foreach (var food in _foods)
-                food.Animator.Draw(window, RenderStates.Default);
+                food.Draw(window);
 
             foreach (var enemy in _enemies)
-                enemy.Animator.Draw(window, RenderStates.Default);
+                enemy.Draw(window);
         }
 
         private void SpawnFood()
@@ -144,17 +151,14 @@ namespace Agario
                 _random.Next(0, _config.ScreenHeight)
             );
 
-            var foodImageData = Units.foodImage;
-            var foodTexture = LoadTextureFromResource(foodImageData);
-
             var foodAnimator = new Animator(
-                texture: foodTexture,
+                texture: LoadTextureFromResource(Units.foodImage),
                 frameWidth: 32,
                 frameHeight: 32,
-                totalFrames: 4,
+                totalFrames: 11,
                 updateInterval: 0.1f
             );
-            foodAnimator.SetScale(6.0f, 6.0f);
+            foodAnimator.SetScale(5f, 5f);
             _foods.Add(new Food(position, foodAnimator));
         }
 
@@ -165,17 +169,14 @@ namespace Agario
                 _random.Next(0, _config.ScreenHeight)
             );
 
-            var enemyImageData = Units.enemyImage;
-            var enemyTexture = LoadTextureFromResource(enemyImageData);
-
             var enemyAnimator = new Animator(
-                texture: enemyTexture,
-                frameWidth: 48,
-                frameHeight: 48,
-                totalFrames: 6,
-                updateInterval: 0.15f
+                texture: LoadTextureFromResource(Units.enemyImage),
+                frameWidth: 32,
+                frameHeight: 32,
+                totalFrames: 11,
+                updateInterval: 0.05f
             );
-            enemyAnimator.SetScale(1.5f, 1.5f);
+            enemyAnimator.SetScale(12.0f, 12.0f);
             _enemies.Add(new Enemy(
                 position,
                 _config.EnemySpeed,
