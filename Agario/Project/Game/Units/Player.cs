@@ -1,48 +1,35 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
-using Source.Tools;
+using Source.Tools;               
 using Agario.Project.Game.Animations;
+
 
 namespace Agario
 {
     public class Player
     {
         public CircleShape Shape { get; private set; }
-        public AnimationSystem Animation { get; private set; }
+
+        public Animator Animator { get; set; }
+
         private float _speed;
         private Vector2f _direction;
-        public int Score { get; private set; } = 0;
         private float _growthFactor;
 
-        public Player(Vector2f position, float speed, float growthFactor, Texture animationTexture)
+        public int Score { get; private set; } = 0;
+        public Player(Vector2f position, float speed, float growthFactor, Animator animator)
         {
             _speed = speed;
             _growthFactor = growthFactor;
+            Animator = animator;
             Shape = new CircleShape(20)
             {
                 FillColor = Color.Blue,
                 Position = position
             };
             Shape.Origin = new Vector2f(20, 20);
-
-            Animation = new AnimationSystem(animationTexture, 180, 180);
         }
 
-        public void HandleInput()
-        {
-            _direction = new Vector2f();
-
-            if (Keyboard.IsKeyPressed(Keyboard.Key.W)) _direction.Y -= 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.S)) _direction.Y += 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A)) _direction.X -= 1;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.D)) _direction.X += 1;
-
-            if (_direction != new Vector2f(0, 0))
-            {
-                _direction = _direction.Normalize();
-            }
-        }
 
         public void SwapWithClosestEnemy(List<Enemy> enemies)
         {
@@ -55,7 +42,6 @@ namespace Agario
             {
                 Vector2f diff = Shape.Position - enemy.Shape.Position;
                 float distance = MathF.Sqrt(diff.X * diff.X + diff.Y * diff.Y);
-
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -65,14 +51,15 @@ namespace Agario
 
             if (closestEnemy != null)
             {
-                (Shape.Position, Shape.Radius, Shape.Origin, closestEnemy.Shape.Position, closestEnemy.Shape.Radius, closestEnemy.Shape.Origin) =
-                (closestEnemy.Shape.Position, closestEnemy.Shape.Radius, closestEnemy.Shape.Origin, Shape.Position, Shape.Radius, Shape.Origin);
+                (Shape.Position, Shape.Radius, Shape.Origin,
+                 closestEnemy.Shape.Position, closestEnemy.Shape.Radius, closestEnemy.Shape.Origin) =
+                (closestEnemy.Shape.Position, closestEnemy.Shape.Radius, closestEnemy.Shape.Origin,
+                 Shape.Position, Shape.Radius, Shape.Origin);
             }
         }
 
         public void Update(float deltaTime)
         {
-            HandleInput();
             if (_direction != new Vector2f(0, 0))
             {
                 Shape.Position += _direction * _speed * deltaTime;
@@ -82,12 +69,19 @@ namespace Agario
                 Math.Clamp(Shape.Position.Y, Shape.Radius, 1200 - Shape.Radius)
             );
 
-            Animation.Update(deltaTime, Shape.Position);
+            if (Animator != null)
+            {
+                Animator.IsMoving = (_direction != new Vector2f(0, 0));
+                Animator.Update(deltaTime, Shape.Position);
+            }
         }
 
         public void Draw(RenderWindow window)
         {
-            Animation.Draw(window, RenderStates.Default);
+            if (Animator != null)
+            {
+                Animator.Draw(window, RenderStates.Default);
+            }
         }
 
         public bool CheckCollision(CircleShape other)
@@ -104,8 +98,10 @@ namespace Agario
         {
             Shape.Radius += _growthFactor;
             Shape.Origin = new Vector2f(Shape.Radius, Shape.Radius);
+            Shape.Scale = new Vector2f(Shape.Radius / 20, Shape.Radius / 20);
             Score += 10;
         }
+
 
         public void MarkAsDefeated()
         {

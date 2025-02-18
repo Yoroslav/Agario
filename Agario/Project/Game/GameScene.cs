@@ -1,12 +1,11 @@
 ﻿using Agario.Entities;
+using Agario.Project.Game.Animations;
 using Agario.Project.Game.Configs;
 using Engine;
-using SFML.Audio;
 using SFML.Graphics;
 using SFML.System;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Agario
 {
@@ -19,7 +18,6 @@ namespace Agario
         private InputHandler _inputHandler;
         private GameConfig _config;
         private SoundSystem _soundSystem;
-        private Texture _playerTexture;
 
         public GameScene(SoundSystem soundSystem)
         {
@@ -29,13 +27,11 @@ namespace Agario
         public void Initialize(GameConfig config)
         {
             _config = config;
-            _playerTexture = new Texture("Assets/character.png");
 
-            _player = new Player(
+            _player = UnitFactory.CreatePlayer(
                 Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20),
                 _config.PlayerSpeed,
-                _config.PlayerGrowthFactor,
-                _playerTexture
+                _config.PlayerGrowthFactor
             );
 
             _foods = new List<Food>();
@@ -120,28 +116,73 @@ namespace Agario
             _soundSystem.PlaySound(AudioConfig.EatFoodSound);
         }
 
+        private Texture LoadTextureFromResource(byte[] imageData)
+        {
+            using (var stream = new MemoryStream(imageData))
+            {
+                return new Texture(stream);
+            }
+        }
+
         public void Render(RenderWindow window)
         {
             window.Clear(_config.BackgroundColor);
-            _player.Animation.Draw(window, RenderStates.Default);
+
+            _player.Animator.Draw(window, RenderStates.Default);
 
             foreach (var food in _foods)
-                window.Draw(food.Shape);
+                food.Animator.Draw(window, RenderStates.Default);
 
             foreach (var enemy in _enemies)
-                window.Draw(enemy.Shape);
+                enemy.Animator.Draw(window, RenderStates.Default);
         }
 
         private void SpawnFood()
         {
-            var position = new Vector2f(_random.Next(0, _config.ScreenWidth), _random.Next(0, _config.ScreenHeight));
-            _foods.Add(new Food(position));
+            var position = new Vector2f(
+                _random.Next(0, _config.ScreenWidth),
+                _random.Next(0, _config.ScreenHeight)
+            );
+
+            var foodImageData = Units.foodImage;
+            var foodTexture = LoadTextureFromResource(foodImageData);
+
+            var foodAnimator = new Animator(
+                texture: foodTexture,
+                frameWidth: 32,
+                frameHeight: 32,
+                totalFrames: 4,
+                updateInterval: 0.1f
+            );
+            foodAnimator.SetScale(6.0f, 6.0f);
+            _foods.Add(new Food(position, foodAnimator));
         }
 
         private void SpawnEnemy()
         {
-            var position = new Vector2f(_random.Next(0, _config.ScreenWidth), _random.Next(0, _config.ScreenHeight));
-            _enemies.Add(new Enemy(position, _config.EnemySpeed, _config.EnemyGrowthFactor, _config.EnemyAggression));
+            var position = new Vector2f(
+                _random.Next(0, _config.ScreenWidth),
+                _random.Next(0, _config.ScreenHeight)
+            );
+
+            var enemyImageData = Units.enemyImage;
+            var enemyTexture = LoadTextureFromResource(enemyImageData);
+
+            var enemyAnimator = new Animator(
+                texture: enemyTexture,
+                frameWidth: 48,
+                frameHeight: 48,
+                totalFrames: 6,
+                updateInterval: 0.15f
+            );
+            enemyAnimator.SetScale(1.5f, 1.5f);
+            _enemies.Add(new Enemy(
+                position,
+                _config.EnemySpeed,
+                _config.EnemyGrowthFactor,
+                _config.EnemyAggression,
+                enemyAnimator
+            ));
         }
 
         public void Dispose()
@@ -150,4 +191,3 @@ namespace Agario
         }
     }
 }
-

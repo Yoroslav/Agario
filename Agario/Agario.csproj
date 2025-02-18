@@ -14,10 +14,43 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\enemyImage.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\foodImage.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\playerImage.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\character1.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\food.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\character.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\Assets\enemy.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SFML.Net" Version="2.6.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Units.Designer.cs">
+      <DependentUpon>Units.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Sound.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -26,6 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Units.resx">
+      <LastGenOutput>Units.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Sound.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Sound.Designer.cs</LastGenOutput>
