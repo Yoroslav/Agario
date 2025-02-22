@@ -12,8 +12,8 @@ namespace Agario.Project.Game.Units
         public static byte[] enemyImage;
         static Units()
         {
-            string foodPath = Path.Combine("assets", "foodimage.png");
-            string enemyPath = Path.Combine("assets", "enemyimage.png");
+            string foodPath = Path.Combine("Assets", "foodimage.png");
+            string enemyPath = Path.Combine("Assets", "enemyimage.png");
             if (File.Exists(foodPath))
                 foodImage = File.ReadAllBytes(foodPath);
             else
