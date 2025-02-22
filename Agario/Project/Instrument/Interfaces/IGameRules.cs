@@ -5,7 +5,7 @@ namespace Engine
 {
     public interface IGameRules
     {
-        void Initialize(GameConfig config);
+        void Initialize(Agario.Project.Game.Configs.GameConfig config);
         void HandleInput();
         void Update(float deltaTime);
         void Render(RenderWindow window);

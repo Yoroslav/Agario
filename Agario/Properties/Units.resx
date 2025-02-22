@@ -118,16 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="eat_enemy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\sound\eat_enemy.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="cobrasrock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\skins\cobrasrock.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="eat_food" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\sound\eat_food.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Doen77" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\skins\doen77.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="game_start" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\sound\game_start.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="enemyImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\enemyimage.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="player_defeated" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\sound\player_defeated.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Etho" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\skins\etho.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="foodImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\assets\foodimage.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Hotch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\skins\hotch.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Units.Designer.cs">
+    <Compile Update="Properties\Units.Designer.cs">
       <DependentUpon>Units.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Units.resx">
+    <EmbeddedResource Update="Properties\Units.resx">
       <LastGenOutput>Units.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>

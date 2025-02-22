@@ -9,6 +9,7 @@ namespace Agario
         public CircleShape Shape { get; protected set; }
         protected float _growthFactor;
         protected Vector2f _direction;
+        public bool MarkedToKill { get; set; }
 
         public GameEntity(float growthFactor)
         {
@@ -29,7 +30,8 @@ namespace Agario
 
         public bool CheckCollision(CircleShape other)
         {
-            return Shape.IsColliding(other);
+            return Shape.GetGlobalBounds().Intersects(other.GetGlobalBounds()) &&
+                   Shape.Position.DistanceTo(other.Position) < Shape.Radius + other.Radius;
         }
 
         protected void HandleWallCollision()
