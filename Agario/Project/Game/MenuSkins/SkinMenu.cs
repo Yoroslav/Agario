@@ -1,4 +1,7 @@
-﻿using SFML.Graphics;
+﻿using Agario.Project.Game.Configs;
+using Agario.Project.Game.MenuSkins;
+using Agario;
+using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 using System;
@@ -13,21 +16,20 @@ namespace Agario.Project.Game.MenuSkins
         private RenderWindow _window;
         private List<UIButton> _skinButtons = new();
         private List<UIButton> _systemButtons = new();
-        private Animator? _currentAnimator;
+        private Animator? _currentAnimator; 
         private Texture _buttonTexture;
         private Font _font;
         private RectangleShape _background;
         private Text _title;
+        private UIButton _playButton;
 
         public Texture? SelectedSkin { get; private set; }
         public event Action OnPlay;
 
-        private UIButton _playButton;
         public SkinMenu(RenderWindow window)
         {
             _window = window;
             _window.Closed += (sender, e) => _window.Close();
-
             LoadResources();
             SetupUI();
             SetupSystemButtons();
@@ -72,7 +74,7 @@ namespace Agario.Project.Game.MenuSkins
                     _font,
                     skinName,
                     new Vector2f(startPos.X, startPos.Y + _skinButtons.Count * buttonSpacing),
-                    () => SelectSkin(skinName), 
+                    () => SelectSkin(skinName),
                     new Vector2f(2f, 2f)
                 );
                 _skinButtons.Add(button);
@@ -90,9 +92,8 @@ namespace Agario.Project.Game.MenuSkins
 
             _playButton = new UIButton(_buttonTexture, _font, "Play", startPos + new Vector2f(spacing * 3, 0), StartGame, new Vector2f(2f, 2f));
             _systemButtons.Add(_playButton);
-
             _playButton.SetEnabled(false);
-        }    
+        }
 
         private void SelectSkin(string skinName)
         {
@@ -101,7 +102,8 @@ namespace Agario.Project.Game.MenuSkins
             if (SelectedSkin == null)
             {
                 Console.WriteLine($"Skin '{skinName}' not found.");
-                _playButton.SetEnabled(false); 
+                _playButton.SetEnabled(false);
+                _currentAnimator = null; 
                 return;
             }
 
@@ -117,7 +119,6 @@ namespace Agario.Project.Game.MenuSkins
             _currentAnimator.IsMoving = true;
             _playButton.SetEnabled(true);
         }
-
 
         private void DownloadSkin() => Console.WriteLine("Downloading skin...");
 
@@ -137,7 +138,7 @@ namespace Agario.Project.Game.MenuSkins
             }
 
             _window.Close();
-            OnPlay?.Invoke();
+            OnPlay?.Invoke(); 
         }
 
         public void Run()
@@ -155,8 +156,11 @@ namespace Agario.Project.Game.MenuSkins
                 foreach (var btn in _skinButtons) btn.UpdateDraw(_window);
                 foreach (var btn in _systemButtons) btn.UpdateDraw(_window);
 
-                _currentAnimator?.Update(deltaTime, new Vector2f(800, 300));
-                _currentAnimator?.Draw(_window);
+                if (_currentAnimator != null)
+                {
+                    _currentAnimator.Update(deltaTime, new Vector2f(800, 300));
+                    _currentAnimator.Draw(_window);
+                }
 
                 _window.Display();
             }

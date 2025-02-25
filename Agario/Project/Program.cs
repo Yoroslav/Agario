@@ -16,27 +16,19 @@ public static class Program
         SoundSystem soundSystem = new SoundSystem("Assets/Sounds");
         SkinMenu skinMenu = new SkinMenu(window);
 
-        skinMenu.OnPlay += () =>
-        {
-            StartGame(window, soundSystem, skinMenu.SelectedSkin); 
-        };
-
+        skinMenu.OnPlay += () => StartGame(window, soundSystem, skinMenu.SelectedSkin);
         skinMenu.Run();
     }
 
     private static void StartGame(RenderWindow window, SoundSystem soundSystem, Texture playerSkin)
     {
         if (playerSkin == null)
-        {
             playerSkin = ResourceManagerXXXXX.GetDefaultSkin();
-        }
-        GameScene gameScene = new GameScene(soundSystem);
-        InputHandler inputHandler = new InputHandler(gameScene.GetPlayer(), gameScene.GetEnemies());
 
         var config = new GameConfig
         {
             ScreenWidth = 1024,
-            ScreenHeight = 768, 
+            ScreenHeight = 768,
             PlayerSpeed = 200f,
             PlayerGrowthFactor = 1.1f,
             InitialFoodCount = 50,
@@ -47,12 +39,11 @@ public static class Program
             BackgroundColor = new Color(50, 50, 50)
         };
 
-        if (playerSkin != null)
-            gameScene.GetPlayer().SetTexture(playerSkin);
-        else
-            gameScene.GetPlayer().SetTexture(ResourceManagerXXXXX.GetDefaultSkin());
-
+        GameScene gameScene = new GameScene(soundSystem);
         gameScene.Initialize(config);
+
+        gameScene.GetPlayer().SetTexture(playerSkin);
+        InputHandler inputHandler = new InputHandler(gameScene.GetPlayer(), gameScene.GetEnemies());
 
         Clock clock = new Clock();
         while (window.IsOpen)

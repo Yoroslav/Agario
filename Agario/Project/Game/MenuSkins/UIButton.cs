@@ -5,7 +5,6 @@ using System;
 
 namespace Agario.Project.Game.MenuSkins
 {
-
     public class UIButton
     {
         private readonly Sprite _sprite;
@@ -15,6 +14,11 @@ namespace Agario.Project.Game.MenuSkins
 
         public UIButton(Texture texture, Font font, string label, Vector2f position, Action action, Vector2f? scale = null)
         {
+            if (texture == null)
+                throw new ArgumentNullException(nameof(texture), "Texture cannot be null.");
+            if (font == null)
+                throw new ArgumentNullException(nameof(font), "Font cannot be null.");
+
             _sprite = new Sprite(texture)
             {
                 Position = position,
@@ -33,11 +37,14 @@ namespace Agario.Project.Game.MenuSkins
         public void SetEnabled(bool isEnabled)
         {
             _isEnabled = isEnabled;
-            _sprite.Color = isEnabled ? Color.White : new Color(150, 150, 150); 
+            _sprite.Color = isEnabled ? Color.White : new Color(150, 150, 150);
         }
 
         public void UpdateDraw(RenderWindow window)
         {
+            if (_sprite == null || _text == null || window == null)
+                return;
+
             var mousePos = Mouse.GetPosition(window);
             var bounds = _sprite.GetGlobalBounds();
             bool isHovered = bounds.Contains(mousePos.X, mousePos.Y);
