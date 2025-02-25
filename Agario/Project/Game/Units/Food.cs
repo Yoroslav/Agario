@@ -1,20 +1,23 @@
-﻿using Agario.Project.Game.Animations;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
+using Agario.Project.Game.Animations;
 
 namespace Agario.Entities
 {
-    public class Food
+    public class Food : GameEntity
     {
-        public CircleShape Shape { get; private set; }
         public Animator Animator { get; private set; }
-        public Food(Vector2f position, Animator animator)
+        public Food(Vector2f position, Animator animator) : base(1.0f)
         {
-            Shape = new CircleShape(10) { Position = position };
+            Shape = new CircleShape(10)
+            {
+                Position = position,
+                FillColor = Color.Green
+            };
             Shape.Origin = new Vector2f(10, 10);
             Animator = animator;
         }
-        public void Update(float deltaTime)
+        public override void Update(float deltaTime)
         {
             Animator.IsMoving = true;
             Animator.Update(deltaTime, Shape.Position);

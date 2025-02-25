@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Agario.Properties {
+namespace Agario {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Agario.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Agario.Properties.Units", typeof(Units).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Agario.Units", typeof(Units).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -116,6 +116,16 @@ namespace Agario.Properties {
         public static byte[] Hotch {
             get {
                 object obj = ResourceManager.GetObject("Hotch", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] playerImage {
+            get {
+                object obj = ResourceManager.GetObject("playerImage", resourceCulture);
                 return ((byte[])(obj));
             }
         }

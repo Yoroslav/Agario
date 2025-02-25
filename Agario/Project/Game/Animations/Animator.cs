@@ -48,4 +48,8 @@ public class Animator
     public void Draw(RenderWindow window) => window.Draw(_sprite);
     public void SetScale(float x, float y) => _sprite.Scale = new Vector2f(x, y);
     public void SetRow(int row) => CurrentRow = row;
+    public void Dispose()
+    {
+        _texture?.Dispose();
+    }
 }

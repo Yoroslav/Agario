@@ -2,13 +2,16 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <EmbeddedResource Update="Properties\UI.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Units.resx">
+    <EmbeddedResource Update="Fonts.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Sound.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>    
+    <EmbeddedResource Update="Units.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Ui.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MenuSkins.Properties {
+namespace Agario {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace MenuSkins.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class UI {
+    internal class Ui {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal UI() {
+        internal Ui() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace MenuSkins.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MenuSkins.Properties.UI", typeof(UI).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Agario.Ui", typeof(Ui).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,16 +63,6 @@ namespace MenuSkins.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        internal static byte[] arial1 {
-            get {
-                object obj = ResourceManager.GetObject("arial1", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
-        /// </summary>
         internal static byte[] background {
             get {
                 object obj = ResourceManager.GetObject("background", resourceCulture);
@@ -86,6 +76,16 @@ namespace MenuSkins.Properties {
         internal static byte[] button_base {
             get {
                 object obj = ResourceManager.GetObject("button_base", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] shadow {
+            get {
+                object obj = ResourceManager.GetObject("shadow", resourceCulture);
                 return ((byte[])(obj));
             }
         }

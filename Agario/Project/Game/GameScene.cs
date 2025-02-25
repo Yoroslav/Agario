@@ -1,88 +1,119 @@
 ﻿using Agario.Entities;
-using Agario.Project.Game.Animations;
 using Agario.Project.Game.Configs;
-using Agario.Properties;
-using Engine;
+using Agario.Project.Game.MenuSkins;
 using SFML.Graphics;
 using SFML.System;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace Agario
 {
-    public class GameScene : Engine.IGameRules, IDisposable
+    public class GameScene : IDisposable
     {
         private Player _player;
-        private List<Entities.Food> _foods;
+        private List<Food> _foods;
         private List<Enemy> _enemies;
         private Random _random;
-        private InputHandler _inputHandler;
         private GameConfig _config;
         private SoundSystem _soundSystem;
-        private Texture _playerTexture;
-        public GameScene(SoundSystem soundSystem, Texture playerTexture)
+
+        public GameScene(SoundSystem soundSystem)
         {
             _soundSystem = soundSystem;
-            _playerTexture = playerTexture;
         }
+
         public void Initialize(GameConfig config)
         {
             _config = config;
-            _player = UnitFactory.CreatePlayer(Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20),
-                _config.PlayerSpeed, _config.PlayerGrowthFactor, _playerTexture);
-            _foods = new List<Entities.Food>();
+
+            Texture defaultSkin = ResourceManagerXXXXX.GetSkinTexture("default");
+            if (defaultSkin == null)
+                throw new InvalidOperationException("Failed to load default skin");
+
+            _player = UnitFactory.CreatePlayer(
+                Player.GetRandomPosition(_config.ScreenWidth, _config.ScreenHeight, 20),
+                _config.PlayerSpeed,
+                _config.PlayerGrowthFactor,
+                defaultSkin,
+                _config.ScreenWidth,
+                _config.ScreenHeight
+            );
+
+            _foods = new List<Food>();
             _enemies = new List<Enemy>();
             _random = new Random();
-            _inputHandler = new InputHandler(_player, _enemies);
+
             LoadSounds();
-            _soundSystem.PlaySound(AudioConfig.StartSound);
+            _soundSystem.PlaySound("game_start");
+
             InitializeEntities();
         }
+
         private void LoadSounds()
         {
-            _soundSystem.LoadSound(AudioConfig.StartSound);
-            _soundSystem.LoadSound(AudioConfig.EatFoodSound);
-            _soundSystem.LoadSound(AudioConfig.EatEnemySound);
-            _soundSystem.LoadSound(AudioConfig.PlayerDefeated);
+            _soundSystem.LoadSound("game_start");
+            _soundSystem.LoadSound("eat_food");
+            _soundSystem.LoadSound("eat_enemy");
+            _soundSystem.LoadSound("player_defeated");
         }
+
         private void InitializeEntities()
         {
             for (int i = 0; i < _config.InitialFoodCount; i++)
                 SpawnFood();
+
             for (int i = 0; i < _config.MaxEnemies; i++)
                 SpawnEnemy();
         }
-        public void HandleInput() => _inputHandler.HandleInput();
+
+        public Player GetPlayer() => _player;
+        public List<Enemy> GetEnemies() => _enemies;
+
         public void Update(float deltaTime)
         {
             _player.Update(deltaTime);
+
             foreach (var food in _foods)
                 food.Update(deltaTime);
+
             foreach (var enemy in _enemies)
             {
                 enemy.Update(deltaTime);
                 enemy.Interact(_enemies, _foods, _player, deltaTime);
             }
-            _foods.RemoveAll(food =>
+
+            var foodToRemove = new List<Food>();
+            foreach (var food in _foods)
             {
                 if (_player.CheckCollision(food.Shape))
                 {
                     HandlePlayerFoodCollision(_player, food);
                     SpawnFood();
-                    return true;
-                }
-                return false;
-            });
-            for (int i = _enemies.Count - 1; i >= 0; i--)
-            {
-                if (_player.CheckCollision(_enemies[i].Shape))
-                {
-                    HandlePlayerEnemyCollision(_player, _enemies[i]);
-                    continue;
+                    foodToRemove.Add(food);
                 }
             }
+            foreach (var food in foodToRemove)
+                _foods.Remove(food);
+
+            var enemiesToRemove = new List<Enemy>();
+            foreach (var enemy in _enemies)
+            {
+                if (_player.CheckCollision(enemy.Shape))
+                {
+                    HandlePlayerEnemyCollision(_player, enemy);
+                    if (enemy.MarkedToKill)
+                        enemiesToRemove.Add(enemy);
+                }
+            }
+            foreach (var enemy in enemiesToRemove)
+            {
+                _enemies.Remove(enemy);
+                SpawnEnemy();
+            }
         }
+
         private void HandlePlayerEnemyCollision(Player player, Enemy enemy)
         {
             if (player.IsLargerThan(enemy))
@@ -90,42 +121,50 @@ namespace Agario
                 player.Grow();
                 _enemies.Remove(enemy);
                 SpawnEnemy();
-                _soundSystem.PlaySound(AudioConfig.EatEnemySound);
+                if (_soundSystem.IsSoundLoaded("eat_enemy"))
+                    _soundSystem.PlaySound("eat_enemy");
             }
             else
             {
                 enemy.Grow();
                 player.MarkAsDefeated();
-                _soundSystem.PlaySound(AudioConfig.PlayerDefeated);
+                if (_soundSystem.IsSoundLoaded("player_defeated"))
+                    _soundSystem.PlaySound("player_defeated");
             }
         }
-        private void HandlePlayerFoodCollision(Player player, Entities.Food food)
+
+        private void HandlePlayerFoodCollision(Player player, Food food)
         {
             player.Grow();
-            _soundSystem.PlaySound(AudioConfig.EatFoodSound);
+            if (_soundSystem.IsSoundLoaded("eat_food"))
+                _soundSystem.PlaySound("eat_food");
         }
+
         private Texture LoadTextureFromResource(byte[] imageData)
         {
-            using (var stream = new MemoryStream(imageData))
-            {
-                return new Texture(stream);
-            }
+            return new Texture(imageData);
         }
+
         public void Render(RenderWindow window)
         {
             window.Clear(_config.BackgroundColor);
+
             _player.Animator.Draw(window);
+
             foreach (var food in _foods)
                 food.Draw(window);
+
             foreach (var enemy in _enemies)
                 enemy.Draw(window);
         }
+
         private void SpawnFood()
         {
             var position = new Vector2f(
                 _random.Next(0, _config.ScreenWidth),
                 _random.Next(0, _config.ScreenHeight)
             );
+
             var foodAnimator = new Animator(
                 texture: LoadTextureFromResource(Units.foodImage),
                 frameWidth: 32,
@@ -134,14 +173,16 @@ namespace Agario
                 updateInterval: 0.1f
             );
             foodAnimator.SetScale(5f, 5f);
-            _foods.Add(new Entities.Food(position, foodAnimator));
+            _foods.Add(new Food(position, foodAnimator));
         }
+
         private void SpawnEnemy()
         {
             var position = new Vector2f(
                 _random.Next(0, _config.ScreenWidth),
                 _random.Next(0, _config.ScreenHeight)
             );
+
             var enemyAnimator = new Animator(
                 texture: LoadTextureFromResource(Units.enemyImage),
                 frameWidth: 32,
@@ -158,6 +199,14 @@ namespace Agario
                 enemyAnimator
             ));
         }
-        public void Dispose() => _soundSystem.Dispose();
+
+        public void Dispose()
+        {
+            _soundSystem.Dispose();
+            foreach (var food in _foods)
+                food.Animator.Dispose();
+            foreach (var enemy in _enemies)
+                enemy.Animator.Dispose();
+        }
     }
 }

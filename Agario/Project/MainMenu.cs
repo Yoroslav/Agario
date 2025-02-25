@@ -14,10 +14,10 @@ namespace Agario.Project
         public MainMenu(RenderWindow window, Action playAction, Action exitAction)
         {
             _window = window;
-            _font = ResourceManager.GetFont();
+            _font = ResourceManagerXXXXX.GetFont();
 
             var playButton = new UIButton(
-                ResourceManager.GetUITexture("button_base"),
+                ResourceManagerXXXXX.GetUITexture("button_base"),
                 _font,
                 "Play",
                 new Vector2f(500, 300),
@@ -25,7 +25,7 @@ namespace Agario.Project
             );
 
             var exitButton = new UIButton(
-                ResourceManager.GetUITexture("button_base"),
+                ResourceManagerXXXXX.GetUITexture("button_base"),
                 _font,
                 "Exit",
                 new Vector2f(500, 400),

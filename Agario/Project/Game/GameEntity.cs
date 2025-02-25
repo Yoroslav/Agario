@@ -9,7 +9,7 @@ namespace Agario
         public CircleShape Shape { get; protected set; }
         protected float _growthFactor;
         protected Vector2f _direction;
-        public bool MarkedToKill { get; set; }
+        public bool markedToKill { get; set; }
 
         public GameEntity(float growthFactor)
         {
@@ -22,10 +22,13 @@ namespace Agario
             HandleWallCollision();
         }
 
-        public virtual void Grow()
+        public void Grow()
         {
-            Shape.Radius += _growthFactor;
-            Shape.Origin = new Vector2f(Shape.Radius, Shape.Radius);
+            if (Shape is CircleShape circle)
+            {
+                circle.Radius *= _growthFactor;
+                circle.Origin = new Vector2f(circle.Radius, circle.Radius);
+            }
         }
 
         public bool CheckCollision(CircleShape other)
@@ -36,16 +39,31 @@ namespace Agario
 
         protected void HandleWallCollision()
         {
-            if (Shape.Position.X < Shape.Radius || Shape.Position.X > 1600 - Shape.Radius)
-                _direction.X *= -1;
-
-            if (Shape.Position.Y < Shape.Radius || Shape.Position.Y > 1200 - Shape.Radius)
-                _direction.Y *= -1;
+            const float screenWidth = 1600;
+            const float screenHeight = 1200;
 
             Shape.Position = new Vector2f(
-                Math.Clamp(Shape.Position.X, Shape.Radius, 1600 - Shape.Radius),
-                Math.Clamp(Shape.Position.Y, Shape.Radius, 1200 - Shape.Radius)
+                HandleAxisCollision(Shape.Position.X, screenWidth, ref _direction.X),
+                HandleAxisCollision(Shape.Position.Y, screenHeight, ref _direction.Y)
             );
         }
+
+        private float HandleAxisCollision(float position, float screenSize, ref float axisDirection)
+        {
+            if (Shape.Radius > screenSize / 2)
+            {
+                axisDirection = 0;
+                return screenSize / 2;
+            }
+            else
+            {
+                if (position < Shape.Radius || position > screenSize - Shape.Radius)
+                {
+                    axisDirection *= -1;
+                }
+                return Math.Clamp(position, Shape.Radius, screenSize - Shape.Radius);
+            }
+        }
+
     }
 }

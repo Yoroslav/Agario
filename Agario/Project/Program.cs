@@ -1,65 +1,72 @@
-﻿using Agario.Project.Game;
+﻿using Agario;
 using Agario.Project.Game.Configs;
+using Agario.Project.Game.MenuSkins;
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 using System;
-using SFML.System;
-using Agario;
 
-class Program
+public static class Program
 {
-    static void Main()
+    public static void Main()
     {
-        using (RenderWindow window = new RenderWindow(new VideoMode(1600, 1200), "Skin Selector"))
-        {
-            var menu = new SkinMenu(window);
-            menu.Run();
+        using RenderWindow window = new RenderWindow(new VideoMode(1024, 768), "Agario Game");
+        window.SetFramerateLimit(60);
 
-            if (menu.SelectedSkin != null)
-            {
-                var gameConfig = LoadGameConfig();
-                var soundSystem = new SoundSystem("Assets/Sounds");
-                var gameScene = new GameScene(soundSystem, menu.SelectedSkin);
-                gameScene.Initialize(gameConfig);
-                RunGame(gameScene);
-            }
-        }
+        SoundSystem soundSystem = new SoundSystem("Assets/Sounds");
+        SkinMenu skinMenu = new SkinMenu(window);
+
+        skinMenu.OnPlay += () =>
+        {
+            StartGame(window, soundSystem, skinMenu.SelectedSkin); 
+        };
+
+        skinMenu.Run();
     }
 
-    private static GameConfig LoadGameConfig()
+    private static void StartGame(RenderWindow window, SoundSystem soundSystem, Texture playerSkin)
     {
-        return new GameConfig
+        if (playerSkin == null)
         {
-            ScreenWidth = 1600,
-            ScreenHeight = 1200,
+            playerSkin = ResourceManagerXXXXX.GetDefaultSkin();
+        }
+        GameScene gameScene = new GameScene(soundSystem);
+        InputHandler inputHandler = new InputHandler(gameScene.GetPlayer(), gameScene.GetEnemies());
+
+        var config = new GameConfig
+        {
+            ScreenWidth = 1024,
+            ScreenHeight = 768, 
             PlayerSpeed = 200f,
-            PlayerGrowthFactor = 5f,
-            EnemySpeed = 150f,
-            EnemyGrowthFactor = 3f,
-            EnemyAggression = 1.2f,
+            PlayerGrowthFactor = 1.1f,
             InitialFoodCount = 50,
             MaxEnemies = 10,
-            BackgroundColor = Color.Cyan
+            EnemySpeed = 150f,
+            EnemyGrowthFactor = 1.05f,
+            EnemyAggression = 1.0f,
+            BackgroundColor = new Color(50, 50, 50)
         };
-    }
 
-    private static void RunGame(GameScene gameScene)
-    {
-        using RenderWindow window = new RenderWindow(new VideoMode(1600, 1200), "Agar.io");
-        window.SetVerticalSyncEnabled(true);
-        window.Closed += (sender, e) => window.Close();
+        if (playerSkin != null)
+            gameScene.GetPlayer().SetTexture(playerSkin);
+        else
+            gameScene.GetPlayer().SetTexture(ResourceManagerXXXXX.GetDefaultSkin());
+
+        gameScene.Initialize(config);
 
         Clock clock = new Clock();
         while (window.IsOpen)
         {
             window.DispatchEvents();
             float deltaTime = clock.Restart().AsSeconds();
-
-            gameScene.HandleInput();
+            inputHandler.HandleInput();
             gameScene.Update(deltaTime);
-            gameScene.Render(window);
 
+            window.Clear(config.BackgroundColor);
+            gameScene.Render(window);
             window.Display();
         }
+
+        gameScene.Dispose();
     }
 }

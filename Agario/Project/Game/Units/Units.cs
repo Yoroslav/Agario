@@ -8,14 +8,16 @@ namespace Agario.Project.Game.Units
 {
     public static class Units
     {
-        public static byte[] foodImage;
-        public static byte[] enemyImage;
+        public static byte[] foodImage = new byte[0];
+        public static byte[] enemyImage = new byte[0];
         static Units()
         {
-            string foodPath = Path.Combine("Assets", "foodimage.png");
-            string enemyPath = Path.Combine("Assets", "enemyimage.png");
+            string foodPath = Path.Combine("Assets", "foodImage.png");
+            string enemyPath = Path.Combine("Assets", "enemyImage.png");
             if (File.Exists(foodPath))
+            {
                 foodImage = File.ReadAllBytes(foodPath);
+            }
             else
             {
                 Console.WriteLine($"Файл {foodPath} не найден.");

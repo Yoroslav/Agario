@@ -8,13 +8,22 @@ public class SoundSystem : IDisposable
     private Dictionary<string, SoundBuffer> _soundBuffers;
     private Dictionary<string, Sound> _sounds;
     private string _soundsFolderPath;
+
     public SoundSystem(string soundsFolderPath)
     {
         _soundBuffers = new Dictionary<string, SoundBuffer>();
         _sounds = new Dictionary<string, Sound>();
         _soundsFolderPath = soundsFolderPath;
+
         if (!Directory.Exists(_soundsFolderPath))
+        {
+            Console.WriteLine($"Sound folder not found: {_soundsFolderPath}");
             Directory.CreateDirectory(_soundsFolderPath);
+        }
+    }
+    public bool IsSoundLoaded(string name)
+    {
+        return _soundBuffers.ContainsKey(name) && _sounds.ContainsKey(name);
     }
     public void LoadSound(string name)
     {
@@ -38,6 +47,7 @@ public class SoundSystem : IDisposable
             }
         }
     }
+
     public void PlaySound(string name, bool loop = false)
     {
         if (_sounds.TryGetValue(name, out var sound))
@@ -50,23 +60,12 @@ public class SoundSystem : IDisposable
             Console.WriteLine($"Sound {name} not found!");
         }
     }
-    public void StopSound(string name)
-    {
-        if (_sounds.TryGetValue(name, out var sound))
-            sound.Stop();
-    }
-    public void SetVolume(string name, float volume)
-    {
-        if (_sounds.TryGetValue(name, out var sound))
-            sound.Volume = Math.Clamp(volume, 0, 100);
-    }
+
     public void Dispose()
     {
         foreach (var sound in _sounds.Values)
             sound.Dispose();
         foreach (var buffer in _soundBuffers.Values)
             buffer.Dispose();
-        _sounds.Clear();
-        _soundBuffers.Clear();
     }
 }
